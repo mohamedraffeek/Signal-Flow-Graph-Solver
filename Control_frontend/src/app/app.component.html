@@ -1,0 +1,55 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+
+<div style="display: flex; flex-direction: row;">
+    <div>
+        <div class="upper-left-container">
+            <table>
+                <tr>
+                    <td>
+                        <button class="add-node" id="addNode" [disabled]="selecting || linking">
+                            <span class="icon"></span>
+                            <span class="text">Add Node</span>
+                        </button>
+                    </td>
+                    <td>
+                        <button class="add-link" id="link">
+                            <div class="icon"><i class="fas fa-link"></i></div>
+                            <span class="text">Add Link</span>
+                        </button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <button class="delete" id="del" [disabled]="nodeOrEdge">
+                            <div class="icon"><i class="fas fa-trash"></i></div>
+                            <span class="text">Delete Link</span>
+                        </button>
+                    </td>
+                    <td>
+                        <button class="selector" id="sel">
+                            <div class="icon"><i class="fas fa-mouse-pointer"></i></div>
+                            <span class="text">Select</span>
+                        </button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div id="myDiagram"></div>
+    </div>
+    <h1 class="title">Signal Flow Graph Solver</h1>
+    <div class="right-container" style="border-left: 2px solid rgb(224, 161, 85);
+                                    border-bottom: 2px solid rgb(224, 161, 85);
+                                    margin-left: -0.2%; width: 300px; height: 300px; background-color: silver;
+                                    align-items: center; display: flex; flex-direction: column; position: absolute; left: 1220px;">
+        <span class="text">Currently Selected</span><br>
+        <span class="text">{{selected? (nodeOrEdge? "Node #" : "Edge Weight: ") + (nodeOrEdge? selected.id : selected.prop('weight')) : ""}}</span>
+        <div style="display: flex; flex-direction: column; position: absolute; margin-top: 100px;">
+            <input id="newWeight" type="number">
+            <button class="setWeight" id="setWeight" [disabled]="nodeOrEdge">Update Weight</button>
+            <button class="submit" id="submit">Submit</button>
+        </div>
+        <footer style="position: relative; top: 500px; width: 316px; color: #104665;">
+            <p>&copy; 2023 | Created By: <p>Mohammed Hassan, Marwan Essam,<br>Abd-Elrahman Alaadin, Hussien Mohammed, Mohammed Rafiq</p>
+        </footer>
+    </div>
+</div>
