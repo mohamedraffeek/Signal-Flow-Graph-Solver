@@ -5,7 +5,6 @@ import java.util.*;
 public class SignalFlowGraph {
     private Map<Integer, Map<Integer, Double>> graph;
     private int size;
-    private List<List<Integer>> forwardPaths;
 
     private void graphConstruct(double[][][] graph){
         this.graph = new HashMap<>(this.size);
@@ -24,15 +23,10 @@ public class SignalFlowGraph {
         this.size = graph.length;
         graphConstruct(graph);
     }
-    SignalFlowGraph(){
-
-    }
-
 
     private void dfs(int node, int destination, boolean []visited, List<Integer> path, List<List<Integer>> paths) {
         visited[node] = true;
         path.add(node);
-
         if (node == destination) {
             paths.add(new ArrayList<>(path));
         }
@@ -48,12 +42,32 @@ public class SignalFlowGraph {
         visited[node] = false;
         path.remove(path.size() - 1);
     }
+    private void dfs(int node, boolean[] visited, List<Integer> path, List<List<Integer>> loops) {
+        visited[node] = true;
+        path.add(node);
+        Map<Integer, Double> neighbours = graph.get(node);
+        for (Map.Entry<Integer, Double> element : neighbours.entrySet()) {
+            Integer neighbour = element.getKey();
+            if (!visited[neighbour]) {
+                dfs(neighbour, visited, path, loops);
+            }
+            else if (!neighbour.equals(path.get(path.size() - 2))) {
+                List<Integer> loop = new ArrayList<>();
+                int index = path.indexOf(neighbour);
+                for (int j = index; j < path.size(); ++j) {
+                    loop.add(path.get(j));
+                }
+                loops.add(loop);
+            }
+        }
+        path.remove(path.size() - 1);
+    }
 
-    private List<List<Integer>> getAllPathsBetweenTwoNodes(int source, int destination){
-            List<List<Integer>> paths = new ArrayList<>();
-            boolean []visited = new boolean[this.size];
-            dfs(source, destination, visited, new ArrayList<>(), paths);
-            return paths;
+    private List<List<Integer>> getAllPathsBetweenTwoNodes(int destination){
+        List<List<Integer>> paths = new ArrayList<>();
+        boolean []visited = new boolean[this.size];
+        dfs(0, destination, visited, new ArrayList<>(), paths);
+        return paths;
     }
 
     private double calculateGain(List<Integer> path){
@@ -64,12 +78,11 @@ public class SignalFlowGraph {
             int secondNode = path.get(i+1);
             gain *= this.graph.get(firstNode).get(secondNode);
         }
-
         return gain;
     }
 
     public List<Map<Double, List<Integer>>> getForwardPath() {
-        this.forwardPaths = getAllPathsBetweenTwoNodes(0, this.size-1);
+        List<List<Integer>> forwardPaths = getAllPathsBetweenTwoNodes(this.size - 1);
         List<Map<Double, List<Integer>>> pathsWithGain = new ArrayList<>();
         for(List<Integer> tempList: forwardPaths){
             double gain = calculateGain(tempList);
@@ -77,12 +90,21 @@ public class SignalFlowGraph {
             tempMap.put(gain, tempList);
             pathsWithGain.add(tempMap);
         }
-
-
         return pathsWithGain;
     }
-    public double[][] getLoops() {
-        return null;
+
+    public List<Map<Double, List<Integer>>> getLoops() {
+        List<List<Integer>> loops = new ArrayList<>();
+        boolean[] visited = new boolean[this.size];
+        dfs(0, visited, new ArrayList<>(), loops);
+        List<Map<Double, List<Integer>>> loopsWithGain = new ArrayList<>();
+        for(List<Integer> tempList: loops){
+            double gain = calculateGain(tempList);
+            Map<Double, List<Integer>> tempMap = new HashMap<>();
+            tempMap.put(gain, tempList);
+            loopsWithGain.add(tempMap);
+        }
+        return loopsWithGain;
     }
     public double[][] getNonTouchingLoops() {
         return null;

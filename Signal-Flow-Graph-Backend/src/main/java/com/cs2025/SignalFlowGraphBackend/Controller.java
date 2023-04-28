@@ -34,4 +34,9 @@ public class Controller {
         return this.object.getForwardPath();
     }
 
+    @GetMapping("/getLoopsWithGain")
+    public List<Map<Double, List<Integer>>> getLoopsWithGain(){
+        return this.object.getForwardPath();
+    }
+
 }
