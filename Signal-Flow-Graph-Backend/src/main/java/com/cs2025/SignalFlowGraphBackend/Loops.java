@@ -12,6 +12,10 @@ public class Loops extends SignalFlowGraph{
     private Map<Integer, Map<Integer, Double>> graph;
     private int size;
 
+    Loops(){
+
+    }
+
     Loops(int size, Map<Integer, Map<Integer, Double>> graph) {
         this.size = size;
         this.graph = graph;
@@ -23,9 +27,7 @@ public class Loops extends SignalFlowGraph{
         return loops;
     }
 
-    Loops(){
 
-    }
     private void foundLoops(){
         boolean[] visited = new boolean[this.size];
         for(int i = 0; i < this.size; i++) {
@@ -55,7 +57,6 @@ public class Loops extends SignalFlowGraph{
         return this.loops;
     }
 
-
     private void LoopDfs(int node, int start, boolean[] visited, List<Integer> path, List<List<Integer>> loops) {
         visited[node] = true;
         path.add(node);
@@ -78,11 +79,4 @@ public class Loops extends SignalFlowGraph{
         path.remove(path.size() - 1);
         visited[node] = false;
     }
-
-
-
-
-
-
-
 }

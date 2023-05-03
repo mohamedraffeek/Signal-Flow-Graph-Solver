@@ -35,23 +35,23 @@ public class Controller {
         return this.loops.getWithGain();
     }
 
-    @GetMapping("/getNon")
-    public List<List<Integer>> getNon(){
-        List<List<Integer>> loops = new ArrayList<>(2);
-        loops.add(new ArrayList<>());
-        loops.add(new ArrayList<>());
-        loops.get(0).add(1);
-        loops.get(0).add(2);
-        loops.get(0).add(3);
-        loops.get(0).add(1);
-        loops.get(1).add(4);
-        loops.get(1).add(5);
-        loops.get(1).add(6);
-        loops.get(1).add(4);
-
-        nonTouchingLoops = new NonTouchingLoops(loops);
-        return this.nonTouchingLoops.findNonTouchingLoops();
-    }
+//    @GetMapping("/getNon")
+//    public List<List<Integer>> getNon(){
+//        List<List<Integer>> loops = new ArrayList<>(2);
+//        loops.add(new ArrayList<>());
+//        loops.add(new ArrayList<>());
+//        loops.get(0).add(1);
+//        loops.get(0).add(2);
+//        loops.get(0).add(3);
+//        loops.get(0).add(1);
+//        loops.get(1).add(4);
+//        loops.get(1).add(5);
+//        loops.get(1).add(6);
+//        loops.get(1).add(4);
+//
+//        nonTouchingLoops = new NonTouchingLoops(loops);
+//        return this.nonTouchingLoops.findNonTouchingLoops();
+//    }
 
 
 }
