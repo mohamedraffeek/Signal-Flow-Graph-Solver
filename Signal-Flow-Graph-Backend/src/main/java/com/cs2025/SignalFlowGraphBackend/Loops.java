@@ -53,10 +53,6 @@ public class Loops extends SignalFlowGraph{
         return this.loopsWithGain;
     }
 
-    public List<List<Integer>> get() {
-        return this.loops;
-    }
-
     private void LoopDfs(int node, int start, boolean[] visited, List<Integer> path, List<List<Integer>> loops) {
         visited[node] = true;
         path.add(node);
