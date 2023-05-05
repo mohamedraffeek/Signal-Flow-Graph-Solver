@@ -39,7 +39,7 @@
     <h1 class="title">Signal Flow Graph Solver</h1>
     <div class="right-container" style="border-left: 2px solid rgb(224, 161, 85);
                                     border-bottom: 2px solid rgb(224, 161, 85);
-                                    margin-left: -0.2%; width: 310px; height: 300px; background-color: #2993d0;
+                                    margin-left: -0.2%; width: 310px; height: 320px; background-color: #2993d0;
                                     align-items: center; display: flex; flex-direction: column; position: absolute; left: 1220px;">
         <span class="text">Currently Selected</span><br>
         <span class="text">{{selected? (nodeOrEdge? "Node #" : "Edge ") + (nodeOrEdge? selected.id : selected.prop('src') + " - " + selected.prop('trg')) : "Nothing"}}<br>
@@ -58,6 +58,19 @@
         <footer style="position: absolute; top: 500px; width: 316px; color: #104665;">
             <p>&copy; 2023 | Created By: <p>Mohammed Hassan, Marwan Essam,<br>Abd-Elrahman Alaadin, Hussien Mohammed, Mohammed Rafiq</p>
         </footer>
+    </div>
+</div>
+<div id = 'display' #setNodesDisplay>
+    <div class="nodes-msg">
+        <div class="close" (click)="off0()">&times;</div>
+        <label for="source" class="node-label">Source: </label>
+        <input type="number" id="source" name="source" class="src-in"><br>
+        <label for="dest" class="node-label">Destination: </label>
+        <input type="number" id="dest" name="dest" class="dest-in">
+        <button class="submit" id="submit-final">
+            <span class="checkmark"><i class="fas fa-check-circle"></i></span>
+            <span class="text">Submit</span>
+        </button>
     </div>
 </div>
 <div id = 'display' #popUpDisplay>

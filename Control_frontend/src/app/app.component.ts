@@ -23,6 +23,7 @@ export class AppComponent implements OnInit{
   index = 0;
 
   @ViewChild('popUpDisplay') myDisp!: ElementRef;
+  @ViewChild('setNodesDisplay') setDisp!: ElementRef;
 
   constructor(private http: HttpClient){}
   
@@ -134,6 +135,10 @@ export class AppComponent implements OnInit{
       this.deleteLink();
     })
     document.getElementById('submit')?.addEventListener('click', () => {
+      this.on0();
+    })
+    document.getElementById('submit-final')?.addEventListener('click', () => {
+      this.off0();
       this.submit();
       this.on();
     })
@@ -322,6 +327,10 @@ export class AppComponent implements OnInit{
   }
 
   submit(){
+    const srcInput: HTMLInputElement = document.getElementById('source') as HTMLInputElement;
+    const destInput: HTMLInputElement = document.getElementById('dest') as HTMLInputElement;
+    const _source = parseInt(srcInput.value);
+    const _dest = parseInt(destInput.value);
     let edges = this.graph.getLinks();
     const adjList: [number, number][][] = new Array(this.nodeID).fill(null).map(() => []);
     for(let edge of edges){
@@ -338,6 +347,18 @@ export class AppComponent implements OnInit{
     this.http.post("http://localhost:8080/connectToApi/sendAdjList", adjList).subscribe(
       response => {
         console.log('Adjacency list sent successfully!');
+      }
+    )
+
+    this.http.post("http://localhost:8080/connectToApi/sendSource", _source).subscribe(
+      response => {
+        console.log('Source node sent successfully!');
+      }
+    )
+
+    this.http.post("http://localhost:8080/connectToApi/sendDestination", _dest).subscribe(
+      response => {
+        console.log('Destination node sent successfully!');
       }
     )
 
@@ -387,8 +408,16 @@ export class AppComponent implements OnInit{
     this.myDisp.nativeElement.style.display = 'block';
   }
 
+  on0(){
+    this.setDisp.nativeElement.style.display = 'block';
+  }
+
   off(){
-    this.myDisp.nativeElement.style.display = "none";
+    this.myDisp.nativeElement.style.display = 'none';
+  }
+
+  off0(){
+    this.setDisp.nativeElement.style.display = 'none';
   }
 
 }

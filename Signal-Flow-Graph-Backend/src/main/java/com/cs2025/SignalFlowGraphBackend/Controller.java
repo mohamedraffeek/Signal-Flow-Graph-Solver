@@ -23,6 +23,16 @@ public class Controller {
         this.object = new SignalFlowGraph(adjacencyList);
     }
 
+    @PostMapping("/sendSource")
+    public void receivedSource(@RequestBody int source) {
+        System.out.println("source: " + source);
+    }
+
+    @PostMapping("/sendDestination")
+    public void receivedDestination(@RequestBody int destination) {
+        System.out.println("destination: " + destination);
+    }
+
     @GetMapping("/getPathsWithGain")
     public List<Map<Double, List<Integer>>> getForwardPathsWithGain(){
         forwardPaths = new ForwardPaths(object.getSize(), object.getGraph());

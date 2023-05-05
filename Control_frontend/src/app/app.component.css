@@ -445,9 +445,23 @@ td {
     padding-right: 30px;
     background-color: white;
     color: rgb(33, 33, 33);
-    width: 60%;
-    height: 80%;
+    width: 900px;
+    height: 600px;
     border-radius: 20px;
+}
+
+.nodes-msg {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding-left: 30px;
+    padding-right: 30px;
+    background-color: white;
+    color: rgb(33, 33, 33);
+    width: 450px;
+    height: 200px;
+    border-radius: 10px;
 }
 
 .close {
@@ -460,4 +474,36 @@ td {
 .close:hover {
     color: red;
     transition: all 0.3s ease-in-out;
+}
+
+.node-label {
+    position: relative;
+    padding: 2px;
+}
+
+#submit-final {
+    position: absolute;
+    left: 420px;
+    top: 80px;
+}
+
+label {
+    display: inline-block;
+    width: 5em;
+    text-align: right;
+    margin-right: 1em;
+    font-weight: bold;
+}
+
+input[type="number"] {
+    padding: 0.5em;
+    border-radius: 0.25em;
+    border: 1px solid #ccc;
+    font-size: 1em;
+}
+
+input[type="number"]:focus {
+    outline: none;
+    border-color: #0077cc;
+    box-shadow: 0 0 0 2px rgba(0, 119, 204, 0.2);
 }
