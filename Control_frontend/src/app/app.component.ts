@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import * as joint from 'jointjs';
 import * as Backbone from 'backbone';
 import * as $ from 'jquery';
@@ -20,6 +20,9 @@ export class AppComponent implements OnInit{
   target!: joint.dia.Cell;
   selected!: joint.dia.Cell | joint.shapes.standard.Link;
   nodeOrEdge: boolean = true;
+  index = 0;
+
+  @ViewChild('popUpDisplay') myDisp!: ElementRef;
 
   constructor(private http: HttpClient){}
   
@@ -46,7 +49,17 @@ export class AppComponent implements OnInit{
           const button = document.getElementById('link');
           if(button)
             button.style.backgroundColor = '#547f98';
-          this.connectNodes(this.source, this.target, 0);
+          if(this.checkEdge(this.source, this.target)){
+            if(!this.tooMuchEdges(this.source, this.target) && this.source !== this.target){
+                this.connectNodesUniqueRouter(this.source, this.target, 0);
+            } else { this.linking = false; }
+          } else {
+            if(this.source == this.target){
+              this.connectNodesSelfRouter(this.source, this.target, 0);
+            } else {
+              this.connectNodes(this.source, this.target, 0, 'metro');
+            }
+          }
           this.source = this.graph.getCell('') || null;
           this.target = this.graph.getCell('') || null;
         }
@@ -59,6 +72,7 @@ export class AppComponent implements OnInit{
             let target = this.selected.getTargetCell();
             source?.attr('circle/stroke', 'orange');
             target?.attr('circle/stroke', 'orange');
+            this.selected.attr('line/stroke', 'red');
           }else{
             this.nodeOrEdge = true;
             this.selected.attr('circle/stroke', 'orange');
@@ -73,6 +87,7 @@ export class AppComponent implements OnInit{
             let target = this.selected.getTargetCell();
             source?.attr('circle/stroke', 'black');
             target?.attr('circle/stroke', 'black');
+            this.selected.attr('line/stroke', 'black');
           }else{
             this.selected.attr('circle/stroke', 'black');
           }
@@ -88,6 +103,7 @@ export class AppComponent implements OnInit{
             let target = this.selected.getTargetCell();
             source?.attr('circle/stroke', 'orange');
             target?.attr('circle/stroke', 'orange');
+            this.selected.attr('line/stroke', 'red');
           }else{
             this.nodeOrEdge = true;
             this.selected.attr('circle/stroke', 'orange');
@@ -119,6 +135,7 @@ export class AppComponent implements OnInit{
     })
     document.getElementById('submit')?.addEventListener('click', () => {
       this.submit();
+      this.on();
     })
   }
 
@@ -141,7 +158,38 @@ export class AppComponent implements OnInit{
     this.graph.addCell(circle);
   }
 
-  connectNodes(source: joint.dia.Cell, target: joint.dia.Cell, weight: number) {
+  connectNodes(source: joint.dia.Cell, target: joint.dia.Cell, weight: number, router: string) {
+    const link = new joint.shapes.standard.Link({
+      source: { id: source.id },
+      target: { id: target.id },
+      attrs: {
+        line: {
+          stroke: 'black'
+        }
+      },
+      labels: [
+        {
+          position: 0.5,
+          attrs: {
+            text: {
+              text: weight.toString(),
+              fill: 'black'
+            }
+          }
+        }
+      ]
+    });
+    link.prop('weight', weight);
+    link.prop('src', source.id);
+    link.prop('trg', target.id);
+    link.router(router);
+    link.connector('jumpover');
+    this.graph.addCell(link);
+    this.linking = false;
+  }
+
+  connectNodesUniqueRouter(source: joint.dia.Cell, target: joint.dia.Cell, weight: number) {
+    var router = this.getUniqueRouter();
     const link = new joint.shapes.standard.Link({
       source: { id: source.id },
       target: { id: target.id },
@@ -157,8 +205,38 @@ export class AppComponent implements OnInit{
         }
       ]
     });
+    link.prop('src', source.id);
+    link.prop('trg', target.id);
     link.prop('weight', weight);
-    link.router('metro');
+    link.router(router);
+    link.connector('jumpover');
+    this.graph.addCell(link);
+    this.linking = false;
+  }
+
+  connectNodesSelfRouter(source: joint.dia.Cell, target: joint.dia.Cell, weight: number) {
+    const link = new joint.shapes.standard.Link({
+      source: { id: source.id },
+      target: { id: target.id },
+      labels: [
+        {
+          position: 0.5,
+          attrs: {
+            text: {
+              text: weight.toString(),
+              fill: 'black'
+            }
+          }
+        }
+      ]
+    });
+    link.router('orthogonal', {
+      padding: 50
+    });
+    link.connector('jumpover');
+    link.prop('src', source.id);
+    link.prop('trg', target.id);
+    link.prop('weight', weight);
     this.graph.addCell(link);
     this.linking = false;
   }
@@ -178,6 +256,19 @@ export class AppComponent implements OnInit{
       if(button)
         button.style.backgroundColor = '#568bac';
     }
+    if(this.selected){
+      if(this.selected instanceof joint.shapes.standard.Link){
+        let source = this.selected.getSourceCell();
+        let target = this.selected.getTargetCell();
+        source?.attr('circle/stroke', 'black');
+        target?.attr('circle/stroke', 'black');
+        this.selected.attr('line/stroke', 'black');
+      }else{
+        this.selected.attr('circle/stroke', 'black');
+      }
+      this.selected = this.graph.getCell('') || null;
+      this.nodeOrEdge = true;
+    }
     this.linking = true;
     const button = document.getElementById('link');
     if(button)
@@ -194,8 +285,10 @@ export class AppComponent implements OnInit{
     }
     if(this.linking){
       this.linking = false;
-      this.source.attr('circle/stroke', 'black');
-      this.source = this.graph.getCell('') || null;
+      if(this.source) {
+        this.source.attr('circle/stroke', 'black');
+        this.source = this.graph.getCell('') || null;
+      }
       const button = document.getElementById('link');
       if(button)
         button.style.backgroundColor = '#547f98';
@@ -229,7 +322,7 @@ export class AppComponent implements OnInit{
   }
 
   submit(){
-    let edges = this.graph.getLinks()
+    let edges = this.graph.getLinks();
     const adjList: [number, number][][] = new Array(this.nodeID).fill(null).map(() => []);
     for(let edge of edges){
       let source = edge.getSourceElement();
@@ -250,9 +343,52 @@ export class AppComponent implements OnInit{
 
   }
 
+  checkEdge(source: joint.dia.Cell, target: joint.dia.Cell): boolean{
+    let edges = this.graph.getLinks();
+    for(let edge of edges){
+      let _source = edge.getSourceElement();
+      let _target = edge.getTargetElement();
+      if(source == _source && target == _target){
+        return true;
+      }
+    }
+    return false;
+  }
+
+  getUniqueRouter() {
+    var routers = ['normal', 'manhattan', 'oneSide'];
+    var router = routers[this.index % routers.length];
+    this.index++;
+    return router;
+  }
+
+  tooMuchEdges(source: joint.dia.Cell, target: joint.dia.Cell): boolean{
+    let edges = this.graph.getLinks();
+    let counter = 0;
+    for(let edge of edges){
+      let _source = edge.getSourceElement();
+      let _target = edge.getTargetElement();
+      if(source == _source && target == _target){
+        counter++;
+        if(counter == 4){
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
   // addEdge(source: number, target: number, weight: number){
   //   this.adjacencyList[source].push([target, weight]);
   //   console.log(this.adjacencyList);
   // }
+
+  on(){
+    this.myDisp.nativeElement.style.display = 'block';
+  }
+
+  off(){
+    this.myDisp.nativeElement.style.display = "none";
+  }
 
 }

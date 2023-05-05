@@ -39,17 +39,30 @@
     <h1 class="title">Signal Flow Graph Solver</h1>
     <div class="right-container" style="border-left: 2px solid rgb(224, 161, 85);
                                     border-bottom: 2px solid rgb(224, 161, 85);
-                                    margin-left: -0.2%; width: 300px; height: 300px; background-color: silver;
+                                    margin-left: -0.2%; width: 310px; height: 300px; background-color: #2993d0;
                                     align-items: center; display: flex; flex-direction: column; position: absolute; left: 1220px;">
         <span class="text">Currently Selected</span><br>
-        <span class="text">{{selected? (nodeOrEdge? "Node #" : "Edge Weight: ") + (nodeOrEdge? selected.id : selected.prop('weight')) : ""}}</span>
-        <div style="display: flex; flex-direction: column; position: absolute; margin-top: 100px;">
+        <span class="text">{{selected? (nodeOrEdge? "Node #" : "Edge ") + (nodeOrEdge? selected.id : selected.prop('src') + " - " + selected.prop('trg')) : "Nothing"}}<br>
+                            {{nodeOrEdge? "" : ("Weight: " + selected.prop('weight'))}}</span>
+        <div style="display: flex; flex-direction: column; position: absolute; margin-top: 130px;">
             <input id="newWeight" type="number">
-            <button class="setWeight" id="setWeight" [disabled]="nodeOrEdge">Update Weight</button>
-            <button class="submit" id="submit">Submit</button>
+            <button class="setWeight" id="setWeight" [disabled]="nodeOrEdge">
+                <span class="checkmark"><i class="fas fa-weight-hanging"></i></span>
+                <span class="text">Update Weight</span>
+            </button>
+            <button class="submit" id="submit">
+                <span class="checkmark"><i class="fas fa-check-circle"></i></span>
+                <span class="text">Submit</span>
+            </button>
         </div>
-        <footer style="position: relative; top: 500px; width: 316px; color: #104665;">
+        <footer style="position: absolute; top: 500px; width: 316px; color: #104665;">
             <p>&copy; 2023 | Created By: <p>Mohammed Hassan, Marwan Essam,<br>Abd-Elrahman Alaadin, Hussien Mohammed, Mohammed Rafiq</p>
         </footer>
+    </div>
+</div>
+<div id = 'display' #popUpDisplay>
+    <div class="msg">
+        <div class="close" (click)="off()">&times;</div>
+        <h1 style="position: absolute; left: 50%; transform: translate(-50%, 0);">Results will show up here</h1>
     </div>
 </div>
