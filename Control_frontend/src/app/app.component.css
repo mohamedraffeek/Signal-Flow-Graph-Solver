@@ -448,6 +448,8 @@ td {
     width: 900px;
     height: 600px;
     border-radius: 20px;
+    overflow: hidden;
+    overflow-y: scroll;
 }
 
 .nodes-msg {

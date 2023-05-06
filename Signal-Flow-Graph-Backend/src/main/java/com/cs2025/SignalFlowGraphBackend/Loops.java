@@ -9,6 +9,7 @@ public class Loops extends SignalFlowGraph{
 
     private List<List<Integer>> loops = new ArrayList<>();
     private List<Map<Double, List<Integer>>> loopsWithGain = new ArrayList<>();
+    private List<String> result = new ArrayList<>();
     private Map<Integer, Map<Integer, Double>> graph;
     private int size;
 
@@ -41,11 +42,16 @@ public class Loops extends SignalFlowGraph{
             Map<Double, List<Integer>> tempMap = new HashMap<>();
             tempMap.put(gain, tempList);
             this.loopsWithGain.add(tempMap);
+            result.add("Loop: " + tempList + ", Gain = " + gain);
         }
     }
 
     public List<Map<Double, List<Integer>>> getWithGain(){
         return this.loopsWithGain;
+    }
+
+    public List<String> getWithGainAsStr() {
+        return result;
     }
 
     private void LoopDfs(int node, int start, boolean[] visited, List<Integer> path, List<List<Integer>> loops) {

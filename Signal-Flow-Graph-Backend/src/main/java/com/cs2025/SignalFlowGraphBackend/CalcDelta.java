@@ -8,6 +8,7 @@ public class CalcDelta extends SignalFlowGraph {
     private ForwardPaths forwardPaths;
     private Map<Double, List<Integer>> deltaForEachForwardPath = new HashMap<>();
     private double mainDelta;
+    private List<String> result = new ArrayList<>();
 
     public CalcDelta(NonTouchingLoops nonTouchingLoopsObj, ForwardPaths forwardPaths) {
         this.NonTouchingLoops = nonTouchingLoopsObj.nonTouchingLoops;
@@ -41,9 +42,14 @@ public class CalcDelta extends SignalFlowGraph {
             Map<Integer, List<List<List<Integer>>>> nonTouchingLoopsForPathI = constructNonTouchingLoopsForPath(path);
             double deltaI = calcDelta(nonTouchingLoopsForPathI);
             tempDeltaForForwardPaths.put(deltaI, path);
+            result.add("For Path: " + path + ", Delta = " + deltaI);
         }
         deltaForEachForwardPath = tempDeltaForForwardPaths;
         return tempDeltaForForwardPaths;
+    }
+
+    public List<String> calcDeltaForEachForwardPathAsStr() {
+        return result;
     }
 
     public Map<Integer, List<List<List<Integer>>>> constructNonTouchingLoopsForPath(List<Integer> path) {

@@ -6,6 +6,7 @@ public class NonTouchingLoops {
 
     public List<List<Integer>> loops;
     public Map<Integer,List<List<List<Integer>>>> nonTouchingLoops;
+    private List<String> result = new ArrayList<>();
 
     public NonTouchingLoops(List<List<Integer>> loops) {
         this.loops = loops;
@@ -32,6 +33,7 @@ public class NonTouchingLoops {
             // Add non-touching loops of size i to the result
             if (!nonTouchingLoopsOfSizeI.isEmpty()) {
                 nonTouchingLoopsMap.put(i, nonTouchingLoopsOfSizeI);
+                result.add("Loops: " + nonTouchingLoopsOfSizeI + ", of Size: " + i);
             }
         }
         addIndividualLoops(nonTouchingLoopsMap);
@@ -45,6 +47,11 @@ public class NonTouchingLoops {
             nonTouchingLoopsOfSize1.add(Arrays.asList(loop));
         }
         nonTouchingLoopsMap.put(1, nonTouchingLoopsOfSize1);
+        result.add("Loops: " + nonTouchingLoopsOfSize1 + ", of Size: 1");
+    }
+
+    public List<String> getNonTouchingLoopsAsStr() {
+        return result;
     }
 
     /**

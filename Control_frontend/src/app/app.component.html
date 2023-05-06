@@ -45,7 +45,7 @@
         <span class="text">{{selected? (nodeOrEdge? "Node #" : "Edge ") + (nodeOrEdge? selected.id : selected.prop('src') + " - " + selected.prop('trg')) : "Nothing"}}<br>
                             {{nodeOrEdge? "" : ("Weight: " + selected.prop('weight'))}}</span>
         <div style="display: flex; flex-direction: column; position: absolute; margin-top: 130px;">
-            <input id="newWeight" type="number">
+            <input id="newWeight" type="number" value="0">
             <button class="setWeight" id="setWeight" [disabled]="nodeOrEdge">
                 <span class="checkmark"><i class="fas fa-weight-hanging"></i></span>
                 <span class="text">Update Weight</span>
@@ -64,9 +64,9 @@
     <div class="nodes-msg">
         <div class="close" (click)="off0()">&times;</div>
         <label for="source" class="node-label">Source: </label>
-        <input type="number" id="source" name="source" class="src-in"><br>
+        <input type="number" id="source" name="source" class="src-in" value="0"><br>
         <label for="dest" class="node-label">Destination: </label>
-        <input type="number" id="dest" name="dest" class="dest-in">
+        <input type="number" id="dest" name="dest" class="dest-in" value="1">
         <button class="submit" id="submit-final">
             <span class="checkmark"><i class="fas fa-check-circle"></i></span>
             <span class="text">Submit</span>
@@ -76,6 +76,31 @@
 <div id = 'display' #popUpDisplay>
     <div class="msg">
         <div class="close" (click)="off()">&times;</div>
-        <h1 style="position: absolute; left: 50%; transform: translate(-50%, 0);">Results will show up here</h1>
+        <h1 style="color: orangered;">Forward Paths With Gains:</h1>
+        <div style="height: 100px; overflow: hidden; overflow-y: scroll;">
+            <div *ngFor="let str of forwardPaths" style="font-size: large;">
+                {{ str }}
+            </div>
+        </div>
+        <h1 style="color: orangered;">Loops With Gains:</h1>
+        <div style="height: 100px; overflow: hidden; overflow-y: scroll;">
+            <div *ngFor="let str of loops" style="font-size: large;">
+                {{ str }}
+            </div>
+        </div>
+        <h1 style="color: orangered;">Non-Touching Loops:</h1>
+        <div style="height: 100px; overflow: hidden; overflow-y: scroll;">
+            <div *ngFor="let str of nonTouchingLoops" style="font-size: large;">
+                {{ str }}
+            </div>
+        </div>
+        <h2 style="color: rgb(0, 102, 255);">Main Delta = {{ mainDelta }}</h2>
+        <h1 style="color: orangered;">Delta For Each Path:</h1>
+        <div style="height: 100px; overflow: hidden; overflow-y: scroll;">
+            <div *ngFor="let str of deltaForEachPath" style="font-size: large;">
+                {{ str }}
+            </div>
+        </div>
+        <h2 style="color: rgb(0, 102, 255);">Numeric Transfer Function = {{ numericTransferFunction }}</h2>
     </div>
 </div>
