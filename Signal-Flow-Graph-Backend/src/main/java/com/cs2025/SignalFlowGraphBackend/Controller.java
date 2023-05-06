@@ -15,6 +15,8 @@ public class Controller {
     public NonTouchingLoops nonTouchingLoopsObj;
     public CalcDelta calcDeltaObj;
 
+    private int source, destination;
+
     @PostMapping("/sendAdjList")
     public void receivedAdjList(@RequestBody double[][][] adjacencyList) {
         this.signalFlowGraphObj = new SignalFlowGraph(adjacencyList);
@@ -22,17 +24,19 @@ public class Controller {
 
     @PostMapping("/sendSource")
     public void receivedSource(@RequestBody int source) {
+        this.source = source;
         System.out.println("source: " + source);
     }
 
     @PostMapping("/sendDestination")
     public void receivedDestination(@RequestBody int destination) {
+        this.destination = destination;
         System.out.println("destination: " + destination);
     }
 
     @GetMapping("/getPathsWithGain")
     public List<Map<List<Integer>,Double>> getForwardPathsWithGain(){
-        forwardPaths = new ForwardPaths(signalFlowGraphObj.getSize(), signalFlowGraphObj.getGraph());
+        forwardPaths = new ForwardPaths(signalFlowGraphObj.getSize(), signalFlowGraphObj.getGraph(), source, destination);
         return forwardPaths.getPathsWithGain();
     }
 
@@ -69,7 +73,7 @@ public class Controller {
             nonTouchingLoopsObj = new NonTouchingLoops(loops.getLoops());
         }
         if(forwardPaths == null)
-            forwardPaths = new ForwardPaths(signalFlowGraphObj.getSize(), signalFlowGraphObj.getGraph());
+            forwardPaths = new ForwardPaths(signalFlowGraphObj.getSize(), signalFlowGraphObj.getGraph(), source, destination);
         return  calcDeltaObj.calcDeltaForEachForwardPath();
     }
 
@@ -81,7 +85,7 @@ public class Controller {
             nonTouchingLoopsObj = new NonTouchingLoops(loops.getLoops());
         }
         if(forwardPaths == null)
-            forwardPaths = new ForwardPaths(signalFlowGraphObj.getSize(), signalFlowGraphObj.getGraph());
+            forwardPaths = new ForwardPaths(signalFlowGraphObj.getSize(), signalFlowGraphObj.getGraph(), source, destination);
         return  calcDeltaObj.calcTransferFunction();
     }
 }

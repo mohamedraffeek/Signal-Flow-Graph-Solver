@@ -11,8 +11,11 @@ public class ForwardPaths extends SignalFlowGraph{
     private List<Map<List<Integer>, Double>> pathsWithGain = new ArrayList<>();
     public Map<Integer, Map<Integer, Double>> graph;
     private int size;
+    private int source, destination;
 
-    ForwardPaths(int size, Map<Integer, Map<Integer, Double>> graph) {
+    ForwardPaths(int size, Map<Integer, Map<Integer, Double>> graph, int source, int destination) {
+        this.source = source;
+        this.destination = destination;
         this.size = size;
         this.graph = graph;
         findForwardPaths();
@@ -20,7 +23,7 @@ public class ForwardPaths extends SignalFlowGraph{
     }
 
     private void findForwardPaths(){
-        this.forwardPaths = getAllPathsBetweenTwoNodes(0, this.size - 1);
+        this.forwardPaths = getAllPathsBetweenTwoNodes(source, destination);
     }
 
 
