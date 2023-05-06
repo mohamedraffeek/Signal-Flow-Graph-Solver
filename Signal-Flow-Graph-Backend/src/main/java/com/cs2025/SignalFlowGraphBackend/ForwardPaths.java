@@ -8,8 +8,8 @@ import java.util.Map;
 public class ForwardPaths extends SignalFlowGraph{
 
     private List<List<Integer>> forwardPaths;
-    private List<Map<Double, List<Integer>>> pathsWithGain = new ArrayList<>();
-    private Map<Integer, Map<Integer, Double>> graph;
+    private List<Map<List<Integer>, Double>> pathsWithGain = new ArrayList<>();
+    public Map<Integer, Map<Integer, Double>> graph;
     private int size;
 
     ForwardPaths(int size, Map<Integer, Map<Integer, Double>> graph) {
@@ -27,21 +27,19 @@ public class ForwardPaths extends SignalFlowGraph{
     private void findForwardPathsWithGain(){
         for(List<Integer> tempList: forwardPaths){
             double gain = calculateGain(tempList, this.graph);
-            Map<Double, List<Integer>> tempMap = new HashMap<>();
-            tempMap.put(gain, tempList);
+            Map<List<Integer>, Double> tempMap = new HashMap<>();
+            tempMap.put(tempList, gain);
             pathsWithGain.add(tempMap);
         }
     }
 
-    public List<List<Integer>> get(){
+    public List<List<Integer>> getForwardPaths(){
         return this.forwardPaths;
     }
 
-    public List<Map<Double, List<Integer>>> getWithGain() {
+    public List<Map<List<Integer>, Double>> getPathsWithGain() {
         return pathsWithGain;
     }
-
-
 
     private void dfsForForwardPath(int node, int destination, boolean []visited, List<Integer> path, List<List<Integer>> paths) {
         visited[node] = true;
@@ -61,7 +59,6 @@ public class ForwardPaths extends SignalFlowGraph{
         visited[node] = false;
         path.remove(path.size() - 1);
     }
-
     private List<List<Integer>> getAllPathsBetweenTwoNodes(int source, int destination){
         List<List<Integer>> paths = new ArrayList<>();
         boolean []visited = new boolean[this.size];

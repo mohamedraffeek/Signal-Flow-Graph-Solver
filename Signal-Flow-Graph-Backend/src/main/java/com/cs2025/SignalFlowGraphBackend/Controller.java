@@ -1,9 +1,7 @@
 package com.cs2025.SignalFlowGraphBackend;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -11,16 +9,15 @@ import java.util.Map;
 @CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/connectToApi")
 public class Controller {
-
-    public double[][][] graph;
-    public SignalFlowGraph object;
+    public SignalFlowGraph signalFlowGraphObj;
     public ForwardPaths forwardPaths;
     public Loops loops;
-    public NonTouchingLoops nonTouchingLoops;
+    public NonTouchingLoops nonTouchingLoopsObj;
+    public CalcDelta calcDeltaObj;
 
     @PostMapping("/sendAdjList")
     public void receivedAdjList(@RequestBody double[][][] adjacencyList) {
-        this.object = new SignalFlowGraph(adjacencyList);
+        this.signalFlowGraphObj = new SignalFlowGraph(adjacencyList);
     }
 
     @PostMapping("/sendSource")
@@ -34,34 +31,57 @@ public class Controller {
     }
 
     @GetMapping("/getPathsWithGain")
-    public List<Map<Double, List<Integer>>> getForwardPathsWithGain(){
-        forwardPaths = new ForwardPaths(object.getSize(), object.getGraph());
-        return forwardPaths.getWithGain();
+    public List<Map<List<Integer>,Double>> getForwardPathsWithGain(){
+        forwardPaths = new ForwardPaths(signalFlowGraphObj.getSize(), signalFlowGraphObj.getGraph());
+        return forwardPaths.getPathsWithGain();
     }
 
     @GetMapping("/getLoopsWithGain")
     public List<Map<Double, List<Integer>>> getLoopsWithGain(){
-        loops = new Loops(object.getSize(), object.getGraph());
+        loops = new Loops(signalFlowGraphObj.getSize(), signalFlowGraphObj.getGraph());
         return this.loops.getWithGain();
     }
 
-//    @GetMapping("/getNon")
-//    public List<List<Integer>> getNon(){
-//        List<List<Integer>> loops = new ArrayList<>(2);
-//        loops.add(new ArrayList<>());
-//        loops.add(new ArrayList<>());
-//        loops.get(0).add(1);
-//        loops.get(0).add(2);
-//        loops.get(0).add(3);
-//        loops.get(0).add(1);
-//        loops.get(1).add(4);
-//        loops.get(1).add(5);
-//        loops.get(1).add(6);
-//        loops.get(1).add(4);
-//
-//        nonTouchingLoops = new NonTouchingLoops(loops);
-//        return this.nonTouchingLoops.findNonTouchingLoops();
-//    }
+    @GetMapping("/getNonTouchingLoops")
+    public Map<Integer,List<List<List<Integer>>>> getNonTouchingLoopsObj(){
+        if(loops == null)
+            loops = new Loops(signalFlowGraphObj.getSize(), signalFlowGraphObj.getGraph());
+        nonTouchingLoopsObj = new NonTouchingLoops(loops.getLoops());
+        return this.nonTouchingLoopsObj.getNonTouchingLoops();
+    }
 
+    @GetMapping("/getMainDelta")
+    public double getMainDelta(){
+        if( nonTouchingLoopsObj == null) {
+            if(loops == null)
+                loops = new Loops(signalFlowGraphObj.getSize(), signalFlowGraphObj.getGraph());
+            nonTouchingLoopsObj = new NonTouchingLoops(loops.getLoops());
+        }
+        calcDeltaObj = new CalcDelta(nonTouchingLoopsObj, forwardPaths);
+        return  calcDeltaObj.calcMainDelta();
+    }
 
+    @GetMapping("/getDeltaForEachForwardPath")
+    public Map<Double, List<Integer>> getDeltaForEachForwardPath(){
+        if( nonTouchingLoopsObj == null ) {
+            if(loops == null)
+                loops = new Loops(signalFlowGraphObj.getSize(), signalFlowGraphObj.getGraph());
+            nonTouchingLoopsObj = new NonTouchingLoops(loops.getLoops());
+        }
+        if(forwardPaths == null)
+            forwardPaths = new ForwardPaths(signalFlowGraphObj.getSize(), signalFlowGraphObj.getGraph());
+        return  calcDeltaObj.calcDeltaForEachForwardPath();
+    }
+
+    @GetMapping("/getTransferFunction")
+    public double getTransferFunction(){
+        if( nonTouchingLoopsObj == null ) {
+            if(loops == null)
+                loops = new Loops(signalFlowGraphObj.getSize(), signalFlowGraphObj.getGraph());
+            nonTouchingLoopsObj = new NonTouchingLoops(loops.getLoops());
+        }
+        if(forwardPaths == null)
+            forwardPaths = new ForwardPaths(signalFlowGraphObj.getSize(), signalFlowGraphObj.getGraph());
+        return  calcDeltaObj.calcTransferFunction();
+    }
 }

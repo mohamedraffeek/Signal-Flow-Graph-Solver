@@ -5,6 +5,7 @@ import java.util.*;
 public class NonTouchingLoops {
 
     public List<List<Integer>> loops;
+    public Map<Integer,List<List<List<Integer>>>> nonTouchingLoops;
 
     public NonTouchingLoops(List<List<Integer>> loops) {
         this.loops = loops;
@@ -19,17 +20,9 @@ public class NonTouchingLoops {
 
         // Loop through all possible combinations of non-touching loops
         for (int i = 2; i <= loops.size(); i++) { // size of non-touching loops
-
             List<List<List<Integer>>> nonTouchingLoopsOfSizeI = new ArrayList<>();
-            //List<List<Integer>> currentLoopCombination = new ArrayList<>();
-
-
             // Generate all combinations of loops of size i
-            //generateCombinations(loops, currentLoopCombination, 0, i);
-
             List<List<Integer>> currentLoopCombination = generateCombinations(i);
-
-
             // Check if each combination is non-touching
             for (List<Integer> combination : currentLoopCombination) {
                 if (areLoopsNonTouching(combination)) {
@@ -41,10 +34,18 @@ public class NonTouchingLoops {
                 nonTouchingLoopsMap.put(i, nonTouchingLoopsOfSizeI);
             }
         }
-
+        addIndividualLoops(nonTouchingLoopsMap);
+        this.nonTouchingLoops = nonTouchingLoopsMap;
         return nonTouchingLoopsMap;
     }
 
+    private void addIndividualLoops(Map<Integer,List<List<List<Integer>>>> nonTouchingLoopsMap){
+        List<List<List<Integer>>> nonTouchingLoopsOfSize1 = new ArrayList<>();
+        for(List<Integer> loop: loops){
+            nonTouchingLoopsOfSize1.add(Arrays.asList(loop));
+        }
+        nonTouchingLoopsMap.put(1, nonTouchingLoopsOfSize1);
+    }
 
     /**
      * Check if a combination of loops is non-touching
@@ -81,6 +82,7 @@ public class NonTouchingLoops {
         }
         return loops;
     }
+
     public List<Integer> getLoop(int index) {
         if (index < 0 || index >= loops.size()) {
             throw new IndexOutOfBoundsException("Invalid loop index");

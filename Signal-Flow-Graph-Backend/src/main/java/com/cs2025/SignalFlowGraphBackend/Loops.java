@@ -12,10 +12,6 @@ public class Loops extends SignalFlowGraph{
     private Map<Integer, Map<Integer, Double>> graph;
     private int size;
 
-    Loops(){
-
-    }
-
     Loops(int size, Map<Integer, Map<Integer, Double>> graph) {
         this.size = size;
         this.graph = graph;
@@ -26,7 +22,6 @@ public class Loops extends SignalFlowGraph{
     public List<List<Integer>> getLoops() {
         return loops;
     }
-
 
     private void foundLoops(){
         boolean[] visited = new boolean[this.size];
