@@ -31,23 +31,24 @@ public class Controller {
     }
 
     @GetMapping("/getPathsWithGain")
-    public List<Map<List<Integer>,Double>> getForwardPathsWithGain(){
+    public List<String> getForwardPathsWithGain(){
         forwardPaths = new ForwardPaths(signalFlowGraphObj.getSize(), signalFlowGraphObj.getGraph());
-        return forwardPaths.getPathsWithGain();
+        return forwardPaths.getPathsWithGainAsStr();
     }
 
     @GetMapping("/getLoopsWithGain")
-    public List<Map<Double, List<Integer>>> getLoopsWithGain(){
+    public List<String> getLoopsWithGain(){
         loops = new Loops(signalFlowGraphObj.getSize(), signalFlowGraphObj.getGraph());
-        return this.loops.getWithGain();
+        return this.loops.getWithGainAsStr();
     }
 
     @GetMapping("/getNonTouchingLoops")
-    public Map<Integer,List<List<List<Integer>>>> getNonTouchingLoopsObj(){
+    public List<String> getNonTouchingLoopsObj(){
         if(loops == null)
             loops = new Loops(signalFlowGraphObj.getSize(), signalFlowGraphObj.getGraph());
         nonTouchingLoopsObj = new NonTouchingLoops(loops.getLoops());
-        return this.nonTouchingLoopsObj.getNonTouchingLoops();
+        this.nonTouchingLoopsObj.getNonTouchingLoops();
+        return this.nonTouchingLoopsObj.getNonTouchingLoopsAsStr();
     }
 
     @GetMapping("/getMainDelta")
@@ -62,7 +63,7 @@ public class Controller {
     }
 
     @GetMapping("/getDeltaForEachForwardPath")
-    public Map<Double, List<Integer>> getDeltaForEachForwardPath(){
+    public List<String> getDeltaForEachForwardPath(){
         if( nonTouchingLoopsObj == null ) {
             if(loops == null)
                 loops = new Loops(signalFlowGraphObj.getSize(), signalFlowGraphObj.getGraph());
@@ -70,7 +71,8 @@ public class Controller {
         }
         if(forwardPaths == null)
             forwardPaths = new ForwardPaths(signalFlowGraphObj.getSize(), signalFlowGraphObj.getGraph());
-        return  calcDeltaObj.calcDeltaForEachForwardPath();
+        calcDeltaObj.calcDeltaForEachForwardPath();
+        return calcDeltaObj.calcDeltaForEachForwardPathAsStr();
     }
 
     @GetMapping("/getTransferFunction")

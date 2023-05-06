@@ -3,7 +3,7 @@ import * as joint from 'jointjs';
 import * as Backbone from 'backbone';
 import * as $ from 'jquery';
 import * as _ from 'lodash';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-root',
@@ -24,6 +24,13 @@ export class AppComponent implements OnInit{
 
   @ViewChild('popUpDisplay') myDisp!: ElementRef;
   @ViewChild('setNodesDisplay') setDisp!: ElementRef;
+
+  forwardPaths: String[] = [];
+  loops: String[] = [];
+  nonTouchingLoops: String[] = [];
+  mainDelta: number = 0;
+  deltaForEachPath: String[] = [];
+  numericTransferFunction: number = 0;
 
   constructor(private http: HttpClient){}
   
@@ -47,18 +54,18 @@ export class AppComponent implements OnInit{
         } else if (!this.target) {
           this.target = cellView.model;
           this.source.attr('circle/stroke', 'black');
-          const button = document.getElementById('link');
-          if(button)
-            button.style.backgroundColor = '#547f98';
+          // const button = document.getElementById('link');
+          // if(button)
+          //   button.style.backgroundColor = '#547f98';
           if(this.checkEdge(this.source, this.target)){
             if(!this.tooMuchEdges(this.source, this.target) && this.source !== this.target){
                 this.connectNodesUniqueRouter(this.source, this.target, 0);
-            } else { this.linking = false; }
+            } else { this.linking = false; alert("Maximum edges between these two nodes reached.") }
           } else {
             if(this.source == this.target){
               this.connectNodesSelfRouter(this.source, this.target, 0);
             } else {
-              this.connectNodes(this.source, this.target, 0, 'metro');
+              this.connectNodes(this.source, this.target, 0, 'manhattan');
             }
           }
           this.source = this.graph.getCell('') || null;
@@ -190,7 +197,7 @@ export class AppComponent implements OnInit{
     link.router(router);
     link.connector('jumpover');
     this.graph.addCell(link);
-    this.linking = false;
+    //this.linking = false;
   }
 
   connectNodesUniqueRouter(source: joint.dia.Cell, target: joint.dia.Cell, weight: number) {
@@ -311,7 +318,7 @@ export class AppComponent implements OnInit{
       this.selected.attr('text/text', newWeight);
       this.selected.prop('weight', newWeight);
     }
-    input.value = "";
+    input.value = "0";
   }
 
   deleteLink(){
@@ -347,21 +354,54 @@ export class AppComponent implements OnInit{
     this.http.post("http://localhost:8080/connectToApi/sendAdjList", adjList).subscribe(
       response => {
         console.log('Adjacency list sent successfully!');
+        this.http.post("http://localhost:8080/connectToApi/sendSource", _source).subscribe(
+          response => {
+            console.log('Source node sent successfully!');
+            this.http.post("http://localhost:8080/connectToApi/sendDestination", _dest).subscribe(
+              response => {
+                console.log('Destination node sent successfully!');
+                this.http.get<String[]>("http://localhost:8080/connectToApi/getPathsWithGain").subscribe(
+                  (list) => {
+                    this.forwardPaths = list;
+                    console.log(this.forwardPaths);
+                    this.http.get<String[]>("http://localhost:8080/connectToApi/getLoopsWithGain").subscribe(
+                      (list) => {
+                        this.loops = list;
+                        console.log(this.loops);
+                        this.http.get<String[]>("http://localhost:8080/connectToApi/getNonTouchingLoops").subscribe(
+                          (list) => {
+                            this.nonTouchingLoops = list;
+                            console.log(this.nonTouchingLoops);
+                            this.http.get<number>("http://localhost:8080/connectToApi/getMainDelta").subscribe(
+                              (delta) => {
+                                this.mainDelta = delta;
+                                console.log(this.mainDelta);
+                                this.http.get<String[]>("http://localhost:8080/connectToApi/getDeltaForEachForwardPath").subscribe(
+                                  (list) => {
+                                    this.deltaForEachPath = list;
+                                    console.log(this.deltaForEachPath);
+                                    this.http.get<number>("http://localhost:8080/connectToApi/getTransferFunction").subscribe(
+                                      (tf) => {
+                                        this.numericTransferFunction = tf;
+                                        console.log(this.numericTransferFunction);
+                                      }
+                                    )
+                                  }
+                                )
+                              }
+                            )
+                          }
+                        )
+                      }
+                    )
+                  }
+                )
+              }
+            )
+          }
+        )
       }
     )
-
-    this.http.post("http://localhost:8080/connectToApi/sendSource", _source).subscribe(
-      response => {
-        console.log('Source node sent successfully!');
-      }
-    )
-
-    this.http.post("http://localhost:8080/connectToApi/sendDestination", _dest).subscribe(
-      response => {
-        console.log('Destination node sent successfully!');
-      }
-    )
-
   }
 
   checkEdge(source: joint.dia.Cell, target: joint.dia.Cell): boolean{

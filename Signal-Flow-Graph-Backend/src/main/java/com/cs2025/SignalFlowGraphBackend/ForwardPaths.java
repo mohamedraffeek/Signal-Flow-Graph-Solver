@@ -9,6 +9,7 @@ public class ForwardPaths extends SignalFlowGraph{
 
     private List<List<Integer>> forwardPaths;
     private List<Map<List<Integer>, Double>> pathsWithGain = new ArrayList<>();
+    private List<String> result = new ArrayList<>();
     public Map<Integer, Map<Integer, Double>> graph;
     private int size;
 
@@ -30,6 +31,7 @@ public class ForwardPaths extends SignalFlowGraph{
             Map<List<Integer>, Double> tempMap = new HashMap<>();
             tempMap.put(tempList, gain);
             pathsWithGain.add(tempMap);
+            result.add("Path: " + tempList + ", Gain = " + gain);
         }
     }
 
@@ -39,6 +41,10 @@ public class ForwardPaths extends SignalFlowGraph{
 
     public List<Map<List<Integer>, Double>> getPathsWithGain() {
         return pathsWithGain;
+    }
+
+    public List<String> getPathsWithGainAsStr() {
+        return result;
     }
 
     private void dfsForForwardPath(int node, int destination, boolean []visited, List<Integer> path, List<List<Integer>> paths) {
