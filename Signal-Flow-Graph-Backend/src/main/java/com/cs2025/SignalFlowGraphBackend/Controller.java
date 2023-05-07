@@ -2,6 +2,7 @@ package com.cs2025.SignalFlowGraphBackend;
 
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -52,6 +53,8 @@ public class Controller {
             loops = new Loops(signalFlowGraphObj.getSize(), signalFlowGraphObj.getGraph());
         nonTouchingLoopsObj = new NonTouchingLoops(loops.getLoops());
         this.nonTouchingLoopsObj.getNonTouchingLoops();
+        if(nonTouchingLoopsObj.getNonTouchingLoopsAsStr().get(0).equalsIgnoreCase( "Loops: [], of Size: 1"))
+            return new ArrayList<>();
         return this.nonTouchingLoopsObj.getNonTouchingLoopsAsStr();
     }
 

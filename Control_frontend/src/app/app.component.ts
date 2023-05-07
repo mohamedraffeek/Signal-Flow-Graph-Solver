@@ -25,11 +25,11 @@ export class AppComponent implements OnInit{
   @ViewChild('popUpDisplay') myDisp!: ElementRef;
   @ViewChild('setNodesDisplay') setDisp!: ElementRef;
 
-  forwardPaths: String[] = [];
+  forwardPaths: String[] = ["None"];
   loops: String[] = [];
-  nonTouchingLoops: String[] = [];
+  nonTouchingLoops: String[] = ["None"];
   mainDelta: number = 0;
-  deltaForEachPath: String[] = [];
+  deltaForEachPath: String[] = ["None"];
   numericTransferFunction: number = 0;
 
   constructor(private http: HttpClient){}
@@ -223,7 +223,7 @@ export class AppComponent implements OnInit{
     link.router(router);
     link.connector('jumpover');
     this.graph.addCell(link);
-    this.linking = false;
+    //this.linking = false;
   }
 
   connectNodesSelfRouter(source: joint.dia.Cell, target: joint.dia.Cell, weight: number) {
@@ -250,7 +250,7 @@ export class AppComponent implements OnInit{
     link.prop('trg', target.id);
     link.prop('weight', weight);
     this.graph.addCell(link);
-    this.linking = false;
+    //this.linking = false;
   }
 
   startLinking(){
@@ -363,14 +363,17 @@ export class AppComponent implements OnInit{
                 this.http.get<String[]>("http://localhost:8080/connectToApi/getPathsWithGain").subscribe(
                   (list) => {
                     this.forwardPaths = list;
+                    if(this.forwardPaths.length == 0) this.forwardPaths.push("None")
                     console.log(this.forwardPaths);
                     this.http.get<String[]>("http://localhost:8080/connectToApi/getLoopsWithGain").subscribe(
                       (list) => {
                         this.loops = list;
+                        if(this.loops.length == 0) this.loops.push("None")
                         console.log(this.loops);
                         this.http.get<String[]>("http://localhost:8080/connectToApi/getNonTouchingLoops").subscribe(
                           (list) => {
                             this.nonTouchingLoops = list;
+                            if(this.nonTouchingLoops.length == 0) this.nonTouchingLoops.push("None")
                             console.log(this.nonTouchingLoops);
                             this.http.get<number>("http://localhost:8080/connectToApi/getMainDelta").subscribe(
                               (delta) => {
@@ -379,6 +382,7 @@ export class AppComponent implements OnInit{
                                 this.http.get<String[]>("http://localhost:8080/connectToApi/getDeltaForEachForwardPath").subscribe(
                                   (list) => {
                                     this.deltaForEachPath = list;
+                                    if(this.deltaForEachPath.length == 0) this.deltaForEachPath.push("None")
                                     console.log(this.deltaForEachPath);
                                     this.http.get<number>("http://localhost:8080/connectToApi/getTransferFunction").subscribe(
                                       (tf) => {
