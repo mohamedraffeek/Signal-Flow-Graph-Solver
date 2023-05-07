@@ -97,6 +97,34 @@ Submit to the backend (source = 0, destination = 7), the correct results are rec
 ![image](https://user-images.githubusercontent.com/96317608/236683196-5d72158d-99e5-4050-b50a-b9f1e2353a82.png)
 ![image](https://user-images.githubusercontent.com/96317608/236683205-7e93646c-db5a-4f73-89f9-91bf1d9a3984.png)
 
+
+Sample Run 3: Very Complex Graph
+
+![image](https://user-images.githubusercontent.com/96317608/236688516-7265fd6e-74ee-4dec-aecc-2d93eef647f3.png)
+
+Assuming the following constant gains:
+A32 = 2	A77 = -1
+A43 = 3	A67 = -1
+A54 = 4	A56 = -1
+A65 = 5	A45 = -1
+A76 = 6	A34 = -1
+A72 = 8	A23 = -1
+A42 = 6	A57 = -2
+
+The graph is drawn like this to make the edges clear:
+
+![image](https://user-images.githubusercontent.com/96317608/236688535-cec3191f-6b24-497e-841f-3d948ec2298b.png)
+
+And after submitting to the backend, we get:
+
+![image](https://user-images.githubusercontent.com/96317608/236688553-be0fb158-a749-4f53-ac16-ef26c554df5f.png)
+![image](https://user-images.githubusercontent.com/96317608/236688558-fb262094-03b5-4911-b7c4-dcec800fee2a.png)
+![image](https://user-images.githubusercontent.com/96317608/236688561-a7b736f6-8289-41fd-8329-219920ee48ca.png)
+![image](https://user-images.githubusercontent.com/96317608/236688569-52e03250-c7f8-4066-bad0-ef29202a4ab0.png)
+![image](https://user-images.githubusercontent.com/96317608/236688574-4a31dc2e-cbe7-48fe-89e6-6cfb42447955.png)
+![image](https://user-images.githubusercontent.com/96317608/236688576-4aedeac3-14c6-4cfd-a16a-a10b92b9ce79.png)
+![image](https://user-images.githubusercontent.com/96317608/236688582-3d571a5f-6d96-4080-be66-4abe2ce7e93e.png)
+
 ---
 
 ## User Guide
