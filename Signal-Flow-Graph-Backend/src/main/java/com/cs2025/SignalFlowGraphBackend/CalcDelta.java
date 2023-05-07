@@ -6,7 +6,7 @@ public class CalcDelta extends SignalFlowGraph {
 
     private Map<Integer, List<List<List<Integer>>>> NonTouchingLoops;
     private ForwardPaths forwardPaths;
-    private Map<Double, List<Integer>> deltaForEachForwardPath = new HashMap<>();
+    private Map<List<Integer>, Double> deltaForEachForwardPath = new HashMap<>();
     private double mainDelta;
     private List<String> result = new ArrayList<>();
 
@@ -36,12 +36,12 @@ public class CalcDelta extends SignalFlowGraph {
         return mainDelta;
     }
 
-    public Map<Double, List<Integer>> calcDeltaForEachForwardPath() {
-        Map<Double, List<Integer>> tempDeltaForForwardPaths = new HashMap<>();
+    public Map<List<Integer>, Double> calcDeltaForEachForwardPath() {
+        Map<List<Integer>, Double> tempDeltaForForwardPaths = new HashMap<>();
         for (List<Integer> path : forwardPaths.getForwardPaths()) {
             Map<Integer, List<List<List<Integer>>>> nonTouchingLoopsForPathI = constructNonTouchingLoopsForPath(path);
             double deltaI = calcDelta(nonTouchingLoopsForPathI);
-            tempDeltaForForwardPaths.put(deltaI, path);
+            tempDeltaForForwardPaths.put(path, deltaI);
             result.add("For Path: " + path + ", Delta = " + deltaI);
         }
         deltaForEachForwardPath = tempDeltaForForwardPaths;
@@ -78,8 +78,8 @@ public class CalcDelta extends SignalFlowGraph {
 
     public double calcTransferFunction() {
         double numerator = 0, denominator = mainDelta;
-        for (Map.Entry<Double, List<Integer>> entry : deltaForEachForwardPath.entrySet()) {
-            numerator += entry.getKey() *  calculateGain(entry.getValue(), forwardPaths.graph);
+        for (Map.Entry<List<Integer>, Double> entry : deltaForEachForwardPath.entrySet()) {
+            numerator += entry.getValue() *  calculateGain(entry.getKey(), forwardPaths.graph);
         }
         double transferFunction = numerator / denominator;
         return transferFunction;
